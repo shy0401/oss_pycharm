@@ -1,18 +1,27 @@
-from sqlalchemy import Column, Integer, String, Float, Date
-from .database import Base
+# backend/models.py
 
-class WeatherForecast(Base):
-    __tablename__ = "weather_forecasts"
+from sqlalchemy import Column, Integer, String, Float, DateTime  # <-- DateTime 추가!
+from .database import Base
+from datetime import datetime  # <-- default=datetime.now를 위해 추가!
+
+class User(Base):
+    __tablename__ = "users"
+    id = Column(Integer, primary_key=True, index=True)
+    username = Column(String(50), unique=True, index=True, nullable=False)
+    hashed_password = Column(String(255), nullable=False)
+
+class MidTermForecast(Base):
+    __tablename__ = "mid_term_forecasts"
 
     id = Column(Integer, primary_key=True, index=True)
-    reg_id = Column(String(10), index=True, nullable=False) # 지역 코드 (예: 11B10101 서울)
-    base_date = Column(Date, nullable=False)               # 발표 날짜 (D-day)
-    forecast_day = Column(Integer, nullable=False)          # 며칠 후 날짜 (3 ~ 10)
+    region_name = Column(String(50), unique=True)
+    land_reg_id = Column(String(20))
+    ta_reg_id = Column(String(20))
+    lat = Column(Float)
+    lon = Column(Float)
+    ta_min = Column(Float, nullable=True)
+    ta_max = Column(Float, nullable=True)
+    wf_status = Column(String(50), nullable=True)
 
-    # 3일~10일후 예보 내용 (공공데이터 API 구조에 맞춤)
-    ta_min = Column(Float)  # 최저 기온
-    ta_max = Column(Float)  # 최고 기온
-    rn_st_am = Column(Float) # 오전 강수 확률
-    rn_st_pm = Column(Float) # 오후 강수 확률
-    wf_am = Column(String(50)) # 오전 날씨 (예: 맑음, 흐림)
-    wf_pm = Column(String(50)) # 오후 날씨
+    # 여기서 DateTime과 datetime.now가 사용됩니다.
+    updated_at = Column(DateTime, default=datetime.now)
