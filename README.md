@@ -1,58 +1,65 @@
-🌤️ Pastel Glass Weather Dashboard (실시간 기상/대기 통합 대시보드)
+# 🌤️ Pastel Glass Weather Dashboard (실시간 기상/대기 통합 대시보드)
 
-> 공공데이터포털(기상청, 에어코리아)의 실시간 API를 활용하여 전국 주요 도시의 기상 현황과 대기질(미세먼지) 정보를 직관적으로 제공하는 웹 대시보드입니다. 최신 UI 트렌드인 파스텔톤 글래스모피즘(Glassmorphism) 디자인을 적용하여 사용자 경험(UX)을 극대화했습니다.
+![Python](https://img.shields.io/badge/Python-3.9+-blue.svg)
+![FastAPI](https://img.shields.io/badge/FastAPI-0.100+-009688.svg)
+![Streamlit](https://img.shields.io/badge/Streamlit-1.25+-FF4B4B.svg)
+![SQLite](https://img.shields.io/badge/SQLite-Database-003B57.svg)
 
-✨ 주요 기능 (Features)
+> **공공데이터포털(기상청, 에어코리아)**의 실시간 API를 활용하여 전국 주요 도시의 기상 현황과 대기질(미세먼지) 정보를 직관적으로 제공하는 웹 대시보드입니다. 최신 UI 트렌드인 **파스텔톤 글래스모피즘(Glassmorphism)** 디자인을 적용하여 사용자 경험(UX)을 극대화했습니다.
 
-🔐 안전한 인증 시스템: JWT(JSON Web Token) 및 Bcrypt 해싱을 이용한 안전한 회원가입 및 로그인 기능.
-🗺️ 실시간 기상/대기 통합 지도: Folium을 활용한 인터랙티브 한국 지도 구현 (화면 이탈 방지 적용).
-  지역별 현재 기온, 습도, 강수확률을 한눈에 확인.
-  대기질 상태에 따른 마커 색상 자동 변화 (좋음: 파스텔 그린, 보통: 베이지, 나쁨: 핑크, 매우나쁨: 다크그레이).
-📅 주간 기상 예보 (Day 4 ~ Day 7):
-  기상청 중기예보 API 데이터를 수집(CSV)하여 지역별 4일~7일 후의 오전/오후 날씨, 강수확률, 최저/최고 기온 제공.
-  FontAwesome 아이콘을 활용한 직관적인 날씨 시각화.
-🎨 글래스모피즘 UI/UX: 부드러운 파스텔 그라데이션 배경과 반투명 유리 질감의 UI 요소 적용.
+## ✨ 주요 기능 (Features)
 
+* **🔐 안전한 인증 시스템:** JWT(JSON Web Token) 및 Bcrypt 해싱을 이용한 안전한 회원가입 및 로그인 기능.
+* **🗺️ 실시간 기상/대기 통합 지도:** * Folium을 활용한 인터랙티브 한국 지도 구현 (화면 이탈 방지 적용).
+  * 지역별 현재 기온, 습도, 강수확률을 한눈에 확인.
+  * **대기질 상태에 따른 마커 색상 자동 변화** (좋음: 파스텔 그린, 보통: 베이지, 나쁨: 핑크, 매우나쁨: 다크그레이).
+* **📅 주간 기상 예보 (Day 4 ~ Day 7):**
+  * 기상청 중기예보 API 데이터를 수집(CSV)하여 지역별 4일~7일 후의 오전/오후 날씨, 강수확률, 최저/최고 기온 제공.
+  * FontAwesome 아이콘을 활용한 직관적인 날씨 시각화.
+* **🎨 글래스모피즘 UI/UX:** 부드러운 파스텔 그라데이션 배경과 반투명 유리 질감의 UI 요소 적용.
 
-🛠️ 기술 스택 (Tech Stack)
+<br/>
 
-Backend
-Framework: FastAPI
-Database / ORM: SQLite, SQLAlchemy
-Security: Passlib (Bcrypt), PyJWT
-Data Parsing: Requests, Pandas
+## 🛠️ 기술 스택 (Tech Stack)
 
-Frontend
-Framework: Streamlit
-Map Visualization: Folium, Streamlit-Folium
-UI Design: Custom HTML/CSS (Glassmorphism), FontAwesome
+### Backend
+* **Framework:** FastAPI
+* **Database / ORM:** SQLite, SQLAlchemy
+* **Security:** Passlib (Bcrypt), PyJWT
+* **Data Parsing:** Requests, Pandas
 
-Open APIs
-[기상청_단기예보 ((구)_동네예보) 조회서비스](https://www.data.go.kr/) (초단기실황, 단기예보)
-[기상청_중기예보 조회서비스](https://www.data.go.kr/) (중기육상예보, 중기기온예보)
-[한국환경공단_에어코리아_대기오염정보](https://www.data.go.kr/) (측정소별 실시간 측정정보)
+### Frontend
+* **Framework:** Streamlit
+* **Map Visualization:** Folium, Streamlit-Folium
+* **UI Design:** Custom HTML/CSS (Glassmorphism), FontAwesome
 
-📂 프로젝트 구조 (Project Structure)
+### Open APIs
+* [기상청_단기예보 ((구)_동네예보) 조회서비스](https://www.data.go.kr/) (초단기실황, 단기예보)
+* [기상청_중기예보 조회서비스](https://www.data.go.kr/) (중기육상예보, 중기기온예보)
+* [한국환경공단_에어코리아_대기오염정보](https://www.data.go.kr/) (측정소별 실시간 측정정보)
 
-text
+<br/>
+
+## 📂 프로젝트 구조 (Project Structure)
+
+```text
 📦 weather-dashboard
  ┣ 📂 backend
  ┃ ┣ 📂 api
- ┃ ┃ ┗ 📜 weather_client.py   기상청 & 에어코리아 API 호출 로직
- ┃ ┣ 📜 auth.py               JWT 인증 및 보안 로직
- ┃ ┣ 📜 database.py           SQLite DB 연결 및 세션 관리
- ┃ ┣ 📜 main.py               FastAPI 메인 서버 (라우터)
- ┃ ┣ 📜 models.py             SQLAlchemy 데이터베이스 모델
- ┃ ┗ 📜 schemas.py            Pydantic 데이터 검증 스키마
+ ┃ ┃ ┗ 📜 weather_client.py   # 기상청 & 에어코리아 API 호출 로직
+ ┃ ┣ 📜 auth.py               # JWT 인증 및 보안 로직
+ ┃ ┣ 📜 database.py           # SQLite DB 연결 및 세션 관리
+ ┃ ┣ 📜 main.py               # FastAPI 메인 서버 (라우터)
+ ┃ ┣ 📜 models.py             # SQLAlchemy 데이터베이스 모델
+ ┃ ┗ 📜 schemas.py            # Pydantic 데이터 검증 스키마
  ┣ 📂 data
- ┃ ┣ 📜 weather.db            유저 정보 저장용 SQLite 데이터베이스
- ┃ ┗ 📜 weekly_forecast.csv   주간 예보 스냅샷 데이터
+ ┃ ┣ 📜 weather.db            # 유저 정보 저장용 SQLite 데이터베이스
+ ┃ ┗ 📜 weekly_forecast.csv   # 주간 예보 스냅샷 데이터
  ┣ 📂 frontend
- ┃ ┗ 📜 app.py                Streamlit 메인 대시보드 UI
- ┣ 📜 fetch_to_csv.py         주간 예보 데이터 수집 배치 스크립트
- ┣ 📜 .env                    환경변수 (API Key, JWT Secret 등 - Github 업로드 X)
+ ┃ ┗ 📜 app.py                # Streamlit 메인 대시보드 UI
+ ┣ 📜 fetch_to_csv.py         # 주간 예보 데이터 수집 배치 스크립트
+ ┣ 📜 .env                    # 환경변수 (API Key, JWT Secret 등 - Github 업로드 X)
  ┗ 📜 README.md
-
 
 🚀 설치 및 실행 방법 (Installation & Usage)
 
