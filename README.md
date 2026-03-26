@@ -5,7 +5,7 @@
 ![Streamlit](https://img.shields.io/badge/Streamlit-1.25+-FF4B4B.svg)
 ![SQLite](https://img.shields.io/badge/SQLite-Database-003B57.svg)
 
-> **공공데이터포털(기상청, 에어코리아)**의 실시간 API를 활용하여 전국 주요 도시의 기상 현황과 대기질(미세먼지) 정보를 직관적으로 제공하는 웹 대시보드입니다. 최신 UI 트렌드인 **파스텔톤 글래스모피즘(Glassmorphism)** 디자인을 적용하여 사용자 경험(UX)을 극대화했습니다.
+> 공공데이터포털(기상청, 에어코리아)의 실시간 API를 활용하여 전국 주요 도시의 기상 현황과 대기질(미세먼지) 정보를 직관적으로 제공하는 웹 대시보드입니다. 최신 UI 트렌드인 **파스텔톤 글래스모피즘(Glassmorphism)** 디자인을 적용하여 사용자 경험(UX)을 극대화했습니다.
 
 ## ✨ 주요 기능 (Features)
 
