@@ -1,3 +1,4 @@
+import pandas as pd
 from fastapi import FastAPI, Depends, HTTPException, status
 from fastapi.middleware.cors import CORSMiddleware
 from fastapi.security import OAuth2PasswordRequestForm
@@ -5,11 +6,10 @@ from sqlalchemy.orm import Session
 from contextlib import asynccontextmanager
 from typing import List, Dict, Any
 
-# 내부 모듈 임포트
-from . import models, schemas, auth, database, utils
+from . import models, schemas, auth, database
 from .api.weather_client import fetch_realtime_weather
 
-# 주요 도시별 격자 좌표(NX, NY) 및 미세먼지 측정소 설정
+# 전주를 비롯한 주요 도시 매핑
 REALTIME_REGION_CONFIG = [
     {"name": "서울", "nx": 60, "ny": 127, "station": "종로구", "lat": 37.5665, "lon": 126.9780},
     {"name": "대전", "nx": 67, "ny": 100, "station": "정림동", "lat": 36.3504, "lon": 127.3845},
@@ -21,7 +21,6 @@ REALTIME_REGION_CONFIG = [
 
 @asynccontextmanager
 async def lifespan(app: FastAPI):
-    # 서버 시작 시 테이블 생성
     models.Base.metadata.create_all(bind=database.engine)
     yield
 
@@ -35,17 +34,32 @@ app.add_middleware(
     allow_headers=["*"],
 )
 
-# --- 인증 관련 엔드포인트 ---
+# backend/main.py 수정 부분
 
 @app.post("/signup", status_code=status.HTTP_201_CREATED)
 def signup(user: schemas.UserCreate, db: Session = Depends(database.get_db)):
+    """새로운 사용자를 등록합니다."""
+    # 1. 중복 사용자 확인
     db_user = db.query(models.User).filter(models.User.username == user.username).first()
     if db_user:
-        raise HTTPException(status_code=400, detail="이미 존재하는 아이디입니다.")
-    new_user = models.User(username=user.username, hashed_password=auth.get_password_hash(user.password))
-    db.add(new_user)
-    db.commit()
-    return {"message": "가입 성공"}
+        # 중복 시 400 에러와 함께 상세 메시지 전달
+        raise HTTPException(
+            status_code=status.HTTP_400_BAD_REQUEST,
+            detail=f"'{user.username}'은(는) 이미 사용 중인 아이디입니다."
+        )
+
+    try:
+        # 2. 비밀번호 해싱 및 저장
+        new_user = models.User(
+            username=user.username,
+            hashed_password=auth.get_password_hash(user.password)
+        )
+        db.add(new_user)
+        db.commit()
+        return {"message": "회원가입에 성공했습니다."}
+    except Exception as e:
+        db.rollback()
+        raise HTTPException(status_code=500, detail=f"서버 내부 오류: {str(e)}")
 
 @app.post("/login")
 def login(form_data: OAuth2PasswordRequestForm = Depends(), db: Session = Depends(database.get_db)):
@@ -55,14 +69,35 @@ def login(form_data: OAuth2PasswordRequestForm = Depends(), db: Session = Depend
     token = auth.create_access_token(data={"sub": user.username})
     return {"access_token": token, "token_type": "bearer"}
 
-# --- 실시간 날씨 데이터 엔드포인트 ---
-
-@app.get("/api/realtime-weather", response_model=List[Dict[str, Any]])
+@app.get("/api/realtime-weather")
 def get_realtime_weather(current_user: models.User = Depends(auth.get_current_user)):
-    """API로부터 실시간 데이터를 직접 가져와 반환 (DB 거치지 않음)"""
     final_data = []
     for r in REALTIME_REGION_CONFIG:
         api_data = fetch_realtime_weather(r["nx"], r["ny"], r["station"])
-        region_result = {**r, **(api_data if api_data else {})}
-        final_data.append(region_result)
+
+        # API 결과가 없거나 온도 값이 없는 경우 CSV에서 보충
+        if api_data is None or api_data.get("temp") is None:
+            try:
+                df_csv = pd.read_csv("./data/weather_data.csv")
+                # 해당 지역 행 찾기
+                target_row = df_csv[df_csv['region_name'] == r['name']]
+
+                if not target_row.empty:
+                    row = target_row.iloc[0]
+                    # [핵심 수정] .item()을 쓰거나 float()로 감싸서 numpy 타입을 파이썬 타입으로 변환
+                    api_data = {
+                        "temp": float(row['ta_max']),
+                        "humi": 50,
+                        "pop": 10,
+                        "air_status": str(row['wf_status']) if 'wf_status' in row else "보통",
+                        "air_color": "#ffff00"
+                    }
+                else:
+                    api_data = {"temp": "?", "air_status": "지역없음"}
+            except Exception as e:
+                print(f"CSV 로드 에러: {e}")
+                api_data = {"temp": "?", "air_status": "파일에러"}
+
+        final_data.append({**r, **api_data})
+
     return final_data

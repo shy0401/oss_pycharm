@@ -7,7 +7,7 @@ class UserCreate(BaseModel):
 class UserOut(BaseModel):
     username: str
     class Config:
-        from_attributes = True
+        from_attributes = True  # ORM 객체를 Pydantic 모델로 변환 허용
 
 class Token(BaseModel):
     access_token: str
